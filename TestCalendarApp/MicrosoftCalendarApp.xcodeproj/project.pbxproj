@@ -306,13 +306,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Pawan Agarwal (TA7EJS56ZG)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = TestCalendarApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.valyoo.lenskart;
 				PRODUCT_NAME = MicrosoftCalendarApp;
-				PROVISIONING_PROFILE = "1a16a5bc-a459-439d-89f4-40562de52020";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -320,13 +321,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Pawan Agarwal (TA7EJS56ZG)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = TestCalendarApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.valyoo.lenskart;
 				PRODUCT_NAME = MicrosoftCalendarApp;
-				PROVISIONING_PROFILE = "1a16a5bc-a459-439d-89f4-40562de52020";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
