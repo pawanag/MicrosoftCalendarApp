@@ -17,7 +17,9 @@
 @property (nonatomic, strong) NSCalendar *gregorian;
 @property (nonatomic, strong) NSArray * weekDayNames;
 @property (nonatomic , strong) NSDate *currentDate;
-
+@property (nonatomic, assign) NSRange days;
+@property (nonatomic, strong) NSDateComponents *nextMonthComponents;
+@property (nonatomic, strong) NSDateComponents *previousMonthComponents;
 @end
 
 @implementation MicrosoftCustomCalendar
@@ -41,9 +43,15 @@
     _dayInfoUnits = NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
     _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     _currentDate = [NSDate date];
-     NSArray * shortWeekdaySymbols = [[[NSDateFormatter alloc] init] shortWeekdaySymbols];
+    NSArray * shortWeekdaySymbols = [[[NSDateFormatter alloc] init] shortWeekdaySymbols];
     _weekDayNames  = @[shortWeekdaySymbols[1], shortWeekdaySymbols[2], shortWeekdaySymbols[3], shortWeekdaySymbols[4],shortWeekdaySymbols[5],shortWeekdaySymbols[6],shortWeekdaySymbols[0]];
     self.arrayOfDates = [[NSMutableArray alloc]init];
+    _days = [_gregorian rangeOfUnit:NSCalendarUnitDay
+                             inUnit:NSCalendarUnitMonth
+                            forDate:[NSDate date]];
+    _nextMonthComponents = [_gregorian components:_dayInfoUnits fromDate:[NSDate date]];
+    _previousMonthComponents = [_gregorian components:_dayInfoUnits fromDate:[NSDate date]];
+    
 }
 /*!
  * @discussion A method which array of weekdays.
@@ -56,50 +64,44 @@
 }
 
 -(void) createCalendar {
-  
+    
     NSDateComponents *components = [_gregorian components:_dayInfoUnits fromDate:[NSDate date]];
     components.day = 1;
     
     NSDate *firstDayOfMonth = [_gregorian dateFromComponents:components];
-    NSDateComponents *comps = [_gregorian components:NSCalendarUnitWeekday fromDate:firstDayOfMonth];
+    NSDateComponents *dateComponent = [_gregorian components:NSCalendarUnitWeekday fromDate:firstDayOfMonth];
     DatesModel *datesModel = [[DatesModel alloc]init];
     
-    NSInteger weekdayBeginning = [comps weekday];
+    NSInteger weekdayBeginning = [dateComponent weekday];
     weekdayBeginning -= 2;
     // Find the beginning of the weekday
     if(weekdayBeginning < 0) weekdayBeginning += 7;
     
-    NSRange days = [_gregorian rangeOfUnit:NSCalendarUnitDay
-                                    inUnit:NSCalendarUnitMonth
-                                   forDate:[NSDate date]];
-    
-    NSInteger monthLength = days.length;
+    NSInteger monthLength = _days.length;
     NSInteger remainingDays = (monthLength + weekdayBeginning) % 7;
     
     if(remainingDays == 0)
         return ;
     
-    NSDateComponents *nextMonthComponents = [_gregorian components:_dayInfoUnits fromDate:[NSDate date]];
-    nextMonthComponents.month ++;
+    _nextMonthComponents.month ++;
     // Previous month
-    NSDateComponents *previousMonthComponents = [_gregorian components:_dayInfoUnits fromDate:[NSDate date]];
-    previousMonthComponents.month --;
-    NSDate *previousMonthDate = [_gregorian dateFromComponents:previousMonthComponents];
+    _previousMonthComponents.month --;
+    NSDate *previousMonthDate = [_gregorian dateFromComponents:_previousMonthComponents];
     NSRange previousMonthDays = [_gregorian rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:previousMonthDate];
     NSInteger maxDate = previousMonthDays.length - weekdayBeginning;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
     // get the previous months date and add it to an array
+    
     for (int i=0; i<weekdayBeginning; i++) {
-        
-        previousMonthComponents.day = maxDate+i+1;
-        NSDate *date = [_gregorian dateFromComponents:previousMonthComponents];
+        _previousMonthComponents.day = maxDate+i+1;
+        NSDate *date = [_gregorian dateFromComponents:_previousMonthComponents];
         NSString *dateInStringFormat = [dateFormatter stringFromDate:date];
         datesModel = [[DatesModel alloc]init];
         datesModel.dateInStringFormat =  dateInStringFormat;
         datesModel.date = date;
-        datesModel.dayInStringFormat =  [NSString stringWithFormat:@"%ld",previousMonthComponents.day];
+        datesModel.dayInStringFormat =  [NSString stringWithFormat:@"%ld",_previousMonthComponents.day];
         [self.arrayOfDates addObject:datesModel];
     }
     
@@ -110,7 +112,6 @@
     
     for (NSInteger i= 0; i<monthLength; i++) {
         components.day = i+1;
-        
         NSDate *date = [_gregorian dateFromComponents:components];
         NSString *dateInStringFormat = [dateFormatter stringFromDate:date];
         datesModel = [[DatesModel alloc]init];
@@ -129,12 +130,12 @@
     // get the Next months date and add it to an array
     for (NSInteger i=remainingDays; i<7; i++) {
         
-        nextMonthComponents.day = (i+1)-remainingDays;
-        NSDate *date = [_gregorian dateFromComponents:nextMonthComponents];
+        _nextMonthComponents.day = (i+1)-remainingDays;
+        NSDate *date = [_gregorian dateFromComponents:_nextMonthComponents];
         NSString *dateInStringFormat = [dateFormatter stringFromDate:date];
         datesModel = [[DatesModel alloc]init];
         datesModel.dateInStringFormat =  dateInStringFormat;
-        datesModel.dayInStringFormat =  [NSString stringWithFormat:@"%ld",nextMonthComponents.day];
+        datesModel.dayInStringFormat =  [NSString stringWithFormat:@"%ld",_nextMonthComponents.day];
         datesModel.date = date;
         [self.arrayOfDates addObject:datesModel];
     }

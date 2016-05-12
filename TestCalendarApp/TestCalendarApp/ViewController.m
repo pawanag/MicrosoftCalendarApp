@@ -24,11 +24,6 @@ NSString * const NoEventsText = @"No Events";
 #define ConstValueOne 1
 #define ConstForColorValue .827
 #define ConstForHeaderHeight 30
-#define LKBuyOptionCellHeight 40
-#define LKBannerHeightWidthRatio .6
-#define LKPageControlHeight 30
-#define LKRecreateDittoButtonHeight 46
-
 
 @interface ViewController ()<UITableViewDataSource,UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource,EKEventEditViewDelegate>
 
@@ -285,7 +280,6 @@ NSString * const NoEventsText = @"No Events";
                                                                     toDate:date
                                                                    options:ConstZeroValue];
     // Create the predicate for seraching default calendar
-    
     NSPredicate *predicate;
     if (self.defaultCalendar) {
         NSArray *calendarArray = @[self.defaultCalendar];
@@ -304,7 +298,11 @@ NSString * const NoEventsText = @"No Events";
 }
 
 #pragma mark ADD event
-    
+
+/*!
+ * @discussion Button Click Action to add a event and Present the EditViewController Screen.
+ * @param object of type id
+ */
 - (IBAction)addEvent:(id)sender {
     // Create an instance of EKEventEditViewController
     EKEventEditViewController *addController = [[EKEventEditViewController alloc] init];
